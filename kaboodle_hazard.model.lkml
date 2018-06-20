@@ -40,6 +40,11 @@ explore: hazard_insurance {
   view_name: Transactions
   sql_table_name: dbo.transactions ;;
 
+  access_filter: {
+    field:agency.agency_name
+    user_attribute:hazardins_agency_name
+  }
+
   join: trans_type {
     type: inner
     relationship: many_to_one
