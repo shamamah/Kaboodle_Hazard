@@ -59,17 +59,26 @@ view: transactions {
   }
 
   dimension: insured_first_name {
+    hidden: yes
     type: string
     sql: ${TABLE}.insured_first_name ;;
   }
 
   dimension: insured_last_name {
+    hidden:  yes
     type: string
     sql: ${TABLE}.insured_last_name ;;
   }
 
+  dimension: insured_name {
+    type: string
+    label: "Name"
+    sql:  ${insured_first_name} + ' ' + ${insured_last_name} ;;
+  }
+
   dimension: policy_number {
     type: string
+    label: "Policy Number"
     sql: ${TABLE}.policy_number ;;
   }
 
@@ -82,17 +91,18 @@ view: transactions {
   dimension: producer_id {
     hidden: yes
     type: number
-    # hidden: yes
     sql: ${TABLE}.producer_id ;;
   }
 
   dimension: quote_number {
     type: string
+    label: "Quote Number"
     sql: ${TABLE}.quote_number ;;
   }
 
   dimension_group: transaction_effective {
     type: time
+    label: "Trans Effective"
     timeframes: [
       raw,
       date,
@@ -118,18 +128,45 @@ view: transactions {
     sql: ${TABLE}.written_prem ;;
   }
 
-  measure: count {
-    hidden: yes
+  measure: quote_count {
     type: count
-    drill_fields: [detail*]
+    label: "Quote Count"
+    #drill_fields: [detail*]
+    filters: {
+      field: policy_number
+      value: "NULL"
+    }
+  }
+
+  measure: policy_count {
+    type: count
+    label: "Policy Count"
+    #drill_fields: [detail*]
+    filters: {
+      field: policy_number
+      value: "-NULL"
+    }
   }
 
   measure:  written_premium {
     type: sum
     label: "Written Premium"
     sql: written_prem ;;
+    filters: {
+      field: policy_number
+      value: "-NULL"
     }
+  }
 
+  measure:  quoted_premium {
+    type: sum
+    label: "Quoted Premium"
+    sql: written_prem ;;
+    filters: {
+      field: policy_number
+      value: "NULL"
+    }
+  }
 
 
   # ----- Sets of fields for drilling ------
