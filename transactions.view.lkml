@@ -128,10 +128,26 @@ view: transactions {
     sql: ${TABLE}.written_prem ;;
   }
 
+  dimension: zip {
+    type: zipcode
+    sql: LEFT(${TABLE}.zip,5) ;;
+    drill_fields: [detail*]
+  }
+
   measure: quote_count {
     type: count
     label: "Quote Count"
     #drill_fields: [detail*]
+    #filters: {
+    #  field: policy_number
+    #  value: "NULL"
+    #}
+  }
+
+  measure: pending_quote_count {
+    type: count
+    label: "Pending Quote Count"
+    drill_fields: [detail*]
     filters: {
       field: policy_number
       value: "NULL"
@@ -147,6 +163,12 @@ view: transactions {
       value: "-NULL"
     }
   }
+
+measure: conversion_ratio {
+  type: number
+  label:  "Conversion Ratio"
+  sql: ((${policy_count}*100)/(${quote_count})) ;;
+}
 
   measure:  written_premium {
     type: sum

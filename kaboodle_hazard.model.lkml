@@ -77,5 +77,4 @@ explore: hazard_insurance {
     sql_on: ${producer.agency_id} = ${agency.agency_id} ;;
   }
 
-
 }
